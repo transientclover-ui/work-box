@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Work Box
+Comment=A place for your project and its workers
+Exec=work-box
+Icon=folder
+Terminal=false
+Categories=Development;Utility;
+StartupNotify=true
