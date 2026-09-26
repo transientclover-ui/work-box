@@ -2,7 +2,9 @@
 
 A small native Linux desktop application for keeping project materials and installed AI workers together. Your files stay yours: a Box references ordinary folders and files wherever they already live.
 
-**Foundation release · 0.1.0 · MIT license**
+**Public beta · v0.1.0-beta.1 · MIT license**
+
+This is early beta software, not a desktop-certified release. Automated tests cover the core logic, managed process lifecycle with fake workers, and basic UI behavior. The shell has had a KDE Wayland startup/layout check. **Hyprland behavior and real authenticated Codex execution remain unverified.** Physical file-manager drag/drop, native dialogs, live system-theme switching, and broader desktop/environment validation are still pending.
 
 ## Run
 

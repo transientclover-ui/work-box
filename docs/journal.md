@@ -41,3 +41,11 @@ Add an explicit **Continue interrupted work** flow: create a new linked attempt 
 ### Checkpoint
 
 This journal, implementation, tests, lockfile and inspected shell image are included in the local Git commit named `Foundation: native Work Box shell and durable task lifecycle`. No remote repository or publication was created. Session ends at that checkpoint; the next task above has not been started.
+
+## First public beta preparation · v0.1.0-beta.1
+
+Reviewed the tracked source, documentation, lockfile, screenshot and existing Git history for public release. No committed credentials, tokens or private project data were found. Screenshot paths refer only to temporary demo files; the author email is a GitHub noreply address. The original checkpoint remains unchanged.
+
+Confirmed the MIT license for Work Box, with dependency licensing caveats retained. Added explicit README beta labeling and prominent unverified Hyprland/authenticated-worker limitations. Set Python package/runtime versions to `0.1.0b1` (the Python spelling of beta 1), refreshed the lockfile, and expanded ignores for build/cache/coverage output, local environment files and dogfood Box metadata. Clarified that the full desktop checklist is a stable-support requirement; no pending validation is claimed as completed.
+
+Publication validation: all 21 tests passed again; source and wheel builds succeeded. The public GitHub beta release lists both implemented features and their verification limits. No new functionality, host configuration changes or unrelated repository changes were made.

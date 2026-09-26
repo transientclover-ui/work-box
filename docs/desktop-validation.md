@@ -2,7 +2,7 @@
 
 The automated suite covers storage, adapters, process lifecycle and a Qt offscreen shell smoke test. A real Qt Wayland window was also launched on the current KDE session, populated with temporary data, captured, and closed. That is a startup/layout check, not full desktop certification.
 
-Before a release, manually perform this matrix on **KDE Plasma Wayland** and **Omarchy/Hyprland Wayland**:
+Before claiming full desktop support in a stable release, manually perform this matrix on **KDE Plasma Wayland** and **Omarchy/Hyprland Wayland**:
 
 - Launch with the desktop's existing Qt integration, without changing its configuration.
 - Verify system font, palette, accent, icons and native folder/file dialogs.

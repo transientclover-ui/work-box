@@ -125,7 +125,7 @@ wheels = [
 
 [[package]]
 name = "work-box"
-version = "0.1.0"
+version = "0.1.0b1"
 source = { editable = "." }
 dependencies = [
     { name = "pyside6" },
