@@ -50,6 +50,8 @@ Deleting Work Box does not delete project materials. Metadata is plain JSON/Mark
 
 ## Development
 
+This project is “2D-printed”: I specify the behavior, AI workers fabricate the implementation, and I test, inspect, refine, and iterate the result.
+
 ```sh
 uv sync
 uv run pytest
