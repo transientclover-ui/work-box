@@ -1,9 +1,11 @@
 [Desktop Entry]
+Version=1.0
 Type=Application
 Name=Work Box
 Comment=A place for your project and its workers
 Exec=work-box
 Icon=folder
 Terminal=false
-Categories=Development;Utility;
+Categories=Development;
 StartupNotify=true
+Keywords=Projects;AI;Workers;

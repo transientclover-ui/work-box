@@ -302,6 +302,7 @@ class Window(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName('Work Box')
+    app.setDesktopFileName('work-box')
     window = Window()
     if len(sys.argv) > 1:
         window.guarded(lambda: window.select_box(Box(Path(sys.argv[1]))))

@@ -13,9 +13,13 @@ dependencies = ["PySide6>=6.8,<7"]
 
 [project.scripts]
 work-box = "workbox.app:main"
+work-box-desktop = "workbox.desktop:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/workbox"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"share/work-box.desktop" = "workbox/work-box.desktop"
 
 [dependency-groups]
 dev = ["pytest>=8"]

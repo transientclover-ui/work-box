@@ -17,7 +17,47 @@ uv run work-box
 uv run work-box /path/to/project
 ```
 
-Alternatively create a virtual environment and `pip install -e .`. No desktop configuration or system installation is required. The optional desktop entry in `share/` is a template, not automatically installed.
+Alternatively create a virtual environment and `pip install -e .`.
+
+## Install in the Linux application menu (including KDE Plasma)
+
+For a persistent installation independent of this checkout, run from the repository:
+
+```sh
+uv tool install .
+uv tool run --from work-box work-box-desktop
+```
+
+For a pip installation, run `work-box-desktop` from the same activated environment
+where you installed Work Box. For development with `uv sync`, use
+`uv run work-box-desktop`; keep that checkout and its `.venv` in place.
+Registration is an explicit second step: pip/uv virtual environments do not
+normally expose their desktop data to the desktop session.
+
+The helper writes `work-box.desktop` to `$XDG_DATA_HOME/applications` (default
+`~/.local/share/applications`), replacing an older Work Box entry at that location.
+It uses the absolute installed `work-box` executable, so launching does not depend
+on the desktop session's PATH, an activated environment, or the working directory.
+It reuses the standard themed `folder` icon already used by Work Box; no separate
+icon download or custom branding is needed. The wheel includes the template.
+Search for **Work Box** in Plasma's application launcher after registration.
+
+After updating/reinstalling, rerun the helper. If you move or delete the Python
+environment, reinstall and register again. To remove the menu entry, remove
+`${XDG_DATA_HOME:-$HOME/.local/share}/applications/work-box.desktop`; uninstalling
+the Python package alone does not remove this separately registered entry.
+Neither operation deletes your Boxes or project files.
+
+If Plasma does not discover it, run `kbuildsycoca6` (or `kbuildsycoca5` on Plasma 5)
+and search again, or log out and back in. Check the `Exec=` path in the installed
+entry and run that executable from a terminal to see startup errors. A Qt runtime
+or platform-plugin error must be resolved in the Python/Qt installation.
+`desktop-file-validate` can check the installed entry when available.
+
+Distribution packagers can install `share/work-box.desktop` into
+`$prefix/share/applications` with `work-box` in the session PATH, and depend on a
+standard icon theme providing `folder`. The per-user helper requires no root
+access and does not modify desktop settings or services.
 
 ## Use
 
