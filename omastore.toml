@@ -1,0 +1,13 @@
+# OmaStore installs the latest stable GitHub release archive and runs this
+# terminal entry point directly. No installer or privileged step is required.
+kind = "app"
+name = "Work Box"
+summary = "Finished read-only CLI for giving AI agents a shared, inspectable view of WorkOrder state."
+categories = ["Development", "Utility"]
+icon = "assets/icon.svg"
+screenshots = ["docs/work-box-cli.svg"]
+terminal = true
+
+[linux.x86_64]
+asset = "work-box-{version}-linux-x86_64.tar.gz"
+exec = "work-box-{version}-linux-x86_64/bin/work-box-orders"

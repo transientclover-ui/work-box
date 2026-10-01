@@ -1,51 +1,54 @@
 # Development journal
 
-## 2026-09-26 · Foundation checkpoint
+## 2026-09-26 · Original desktop experiment
 
-### Scope and decisions
+The initial public beta explored a Qt desktop shell that associated project files
+and launched a managed Codex process. It included worker detection, process-group
+HALT behavior, task logs, and design placeholders for broader automation.
 
-Built the first dogfoodable shell only. Chose Python 3.11+ / Qt 6 Widgets (PySide6) after comparing Qt Widgets, Qt Quick, GTK/libadwaita, and web stacks. Native platform integration and a small independent filesystem/process core outweighed a custom visual stack. See architecture.md for sources, tradeoffs and packaging caveats.
+That direction is superseded. It did not match the finished product's deliberately
+small shared-state purpose, and the desktop runner, worker adapters, supervisor,
+recovery behavior, and speculative orchestration concepts were removed before the
+stable release.
 
-Created an MIT-licensed Python package with an executable entry point, dependency lock, independent storage/worker/process modules, tests, documentation and an optional desktop-entry template. No desktop entry was installed. No desktop, Omarchy, KDE, system service, package trust, login/session settings or existing repositories were changed. Dependencies were installed in the project virtual environment.
+## 2026-09-27 · Shared WorkOrder format
 
-A Box uses an exclusive `.workbox` directory in a user-selected existing folder and absolute file/folder references. It never moves source materials, invents collision names, creates standard project folders, or reinitializes Git. Versioned JSON, atomic replacement and an advisory lock supply a deliberately small persistence boundary.
+Added the versioned `WorkOrder` JSON model and deterministic read-only directory
+listing. Full saved-record validation rejects missing, unknown, malformed, or
+invalid fields through one model path.
 
-Enabled one Codex process at a time, with durable request/context/input/log/status records. The supervisor holds the Box lock, watches a parent pipe, and handles process-group termination. Copilot is detected but launch remains disabled until permissions and interaction are designed. No provider credentials are read or stored by Work Box.
+Added complete single-record detail output, optional status filtering using the
+model vocabulary, and a status-count summary containing every valid status,
+including zero-count statuses. Empty directories produce valid empty results.
+Malformed records fail without partial JSON.
 
-### Validation completed
+An explicit status-update CLI was briefly developed after filtering. It was
+removed from the stable product so every shipped command remains read-only.
 
-- **21 tests passed** (`uv run pytest -q`, 2.74 seconds on this machine).
-- Storage: round trip; deduplicated in-place references; collision preservation; concurrent-open rejection; schema validation; Git worktree association; missing references; linked metadata refusal; interrupted-task recovery preserving completed pieces; failed atomic replace preserving the previous record; lock release after malformed task metadata.
-- Workers: absent executable, installed version probe, safe argument construction and explicit Copilot launch rejection.
-- Processes: successful durable output/context; nonzero exit; missing executable; immediate HALT; repeated HALT; TERM-resistant parent/child process group cleanup; existing result preservation; inherited lock; parent-pipe disconnect simulating GUI failure.
-- UI: offscreen shell construction, Box population, appearance API calls and synthetic file drop preserving source files.
-- Real desktop: launched and closed a Qt **Wayland** window on the current **KDE** session, populated from temporary test files. Captured and visually inspected `shell.png` for layout/readability. Detected `codex-cli 0.155.1` and `GitHub Copilot CLI 1.0.88.` without starting an AI task.
-- Packaging: `uv build` produced both source archive and wheel successfully. The editable install and console entry point are available in `.venv`.
+## 2026-10-01 · Stable product finalization
 
-An initial editable build failed because README.md had not yet been written; completed the README and rebuilt successfully. No unresolved build/test failures remain.
+Selected shared WorkOrder checkpoint `0de60b6` as the functional baseline.
+Discarded later local-only integrity, forensic, diagnostic-schema, report-loader,
+and speculative project-box work. Removed the inherited desktop application,
+agent execution, supervision, recovery, and status-mutation command.
 
-### Limits and remaining work
+Repositioned Work Box as a complete shared-state inspection tool. The stable
+package contains the WorkOrder model and deterministic list, filter, detail, and
+summary CLI only. It has no runtime package dependencies and does not execute,
+coordinate, arbitrate, quarantine, repair, or recover agent work.
 
-This is an early local prototype, not a desktop-certified release. Hyprland interaction, actual file-manager drag/drop, native dialogs, runtime system-theme switching and a real authenticated Codex task remain manual checks. Theme overrides use Qt hints and can be ignored by external styles. Bundled Qt versus system plugin ABI needs distribution packaging validation.
+The development phase is complete at this scope. There is no core-feature queue;
+future repository activity is limited to compatible maintenance.
 
-Worker readiness means installed/version available, not authenticated or funded. A zero exit status is not verification of task quality. Logs carry the durable worker result; no separate structured handoff/result index is enforced. No paid AI execution was performed during development.
+Final validation passed **121 tests**. Source and wheel builds succeeded, and a
+fresh environment outside the checkout exercised the installed
+`work-box-orders` command for list, filter, detail, summary, invalid input, and
+rejected mutation options. The portable Linux archive passed the same command
+checks, contained no tests or development caches, reproduced byte-for-byte across
+builds, and has a published SHA-256 companion.
 
-Process-group shutdown covers ordinary descendants; deliberately detached children or simultaneous supervisor failure remain limitations. No systemd service/cgroup setup was added. Recovery marks abandoned tasks interrupted and never restarts work automatically. Actual machine power loss and network filesystems were not tested. Disk errors may prevent final task status persistence, though cleanup still attempts to kill the managed group.
-
-Multi-worker authorization/piece fields and Time Capsule protocols are **design-only**. No splitter, scheduler, failover, capsule archives, copying/import, interactive approvals or resume UI exists. Original prompt/context/logs support manual continuation; automatic resumption is deliberately absent.
-
-### Next smallest useful task
-
-Add an explicit **Continue interrupted work** flow: create a new linked attempt from the saved request/context/logs, let the user review the handoff and working directory, and start only after Give Work. Verify that completed artifacts remain untouched unless the new task explicitly authorizes changes. This closes the smallest practical durability gap without adding orchestration.
-
-### Checkpoint
-
-This journal, implementation, tests, lockfile and inspected shell image are included in the local Git commit named `Foundation: native Work Box shell and durable task lifecycle`. No remote repository or publication was created. Session ends at that checkpoint; the next task above has not been started.
-
-## First public beta preparation · v0.1.0-beta.1
-
-Reviewed the tracked source, documentation, lockfile, screenshot and existing Git history for public release. No committed credentials, tokens or private project data were found. Screenshot paths refer only to temporary demo files; the author email is a GitHub noreply address. The original checkpoint remains unchanged.
-
-Confirmed the MIT license for Work Box, with dependency licensing caveats retained. Added explicit README beta labeling and prominent unverified Hyprland/authenticated-worker limitations. Set Python package/runtime versions to `0.1.0b1` (the Python spelling of beta 1), refreshed the lockfile, and expanded ignores for build/cache/coverage output, local environment files and dogfood Box metadata. Clarified that the full desktop checklist is a stable-support requirement; no pending validation is claimed as completed.
-
-Publication validation: all 21 tests passed again; source and wheel builds succeeded. The public GitHub beta release lists both implemented features and their verification limits. No new functionality, host configuration changes or unrelated repository changes were made.
+`omastore lint-manifest .` accepted the root manifest. The prepublication
+`omastore check --manifest omastore.toml transientclover-ui/work-box` accepted
+the metadata, category, and license; as expected, it could not validate a stable
+asset before that release existed. The exact archive, expanded manifest paths,
+launcher, checksum, and media paths were validated locally before publication.

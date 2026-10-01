@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" rx="24" fill="#0f172a"/>
+  <rect x="32" y="32" width="1136" height="611" rx="14" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <circle cx="66" cy="65" r="8" fill="#fb7185"/>
+  <circle cx="92" cy="65" r="8" fill="#fbbf24"/>
+  <circle cx="118" cy="65" r="8" fill="#4ade80"/>
+  <g font-family="monospace" font-size="25">
+    <text x="62" y="125" fill="#7dd3fc">$ work-box-orders --summary ./work-orders</text>
+    <text x="62" y="180" fill="#e2e8f0">{</text>
+    <text x="88" y="220" fill="#e2e8f0">"total": 3,</text>
+    <text x="88" y="260" fill="#e2e8f0">"by_status": {</text>
+    <text x="116" y="300" fill="#e2e8f0">"active": 1,</text>
+    <text x="116" y="340" fill="#e2e8f0">"cancelled": 0,</text>
+    <text x="116" y="380" fill="#e2e8f0">"completed": 1,</text>
+    <text x="116" y="420" fill="#e2e8f0">"draft": 1,</text>
+    <text x="116" y="460" fill="#e2e8f0">"waiting": 0</text>
+    <text x="88" y="500" fill="#e2e8f0">}</text>
+    <text x="62" y="540" fill="#e2e8f0">}</text>
+    <text x="62" y="600" fill="#94a3b8">Read-only shared WorkOrder state.</text>
+  </g>
+</svg>

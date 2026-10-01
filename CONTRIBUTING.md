@@ -1,7 +1,21 @@
 # Contributing
 
-Run `uv sync` and `uv run pytest` before proposing changes. Keep non-UI behavior independent of Qt. Use temporary directories and fake worker programs in tests; do not require provider authentication or paid calls.
+Work Box is complete at its deliberately narrow, read-only shared-state scope.
+Bug fixes, compatibility fixes, documentation corrections, and validation
+improvements are welcome when they preserve that scope.
 
-Changes must preserve ordinary files, existing organization, explicit worker authorization and durable HALT intent. Do not add credential storage, hidden auto-dispatch, automatic collision renaming or desktop configuration changes. Document schema changes and reject unsupported versions rather than guessing.
+Before proposing a change:
 
-See docs/desktop-validation.md for the manual Linux release matrix. Report the desktop, Qt version, worker version and reproduction steps with issues; redact private material from task logs.
+```sh
+uv sync
+uv run pytest -q
+uv build
+git diff --check
+```
+
+Keep the runtime independent of GUI toolkits and external services. Preserve the
+documented WorkOrder schema, deterministic JSON output, full-record validation,
+read-only CLI behavior, and exit codes.
+
+Agent execution, supervision, orchestration, arbitration, quarantine, automated
+repair, recovery, and migration are intentionally out of scope.

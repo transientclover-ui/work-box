@@ -1,107 +1,115 @@
 # Work Box
 
-A small native Linux desktop application for keeping project materials and installed AI workers together. Your files stay yours: a Box references ordinary folders and files wherever they already live.
+Work Box is a small, finished tool for giving multiple AI agents a common,
+inspectable view of work-order state. It intentionally stops at shared visibility
+and predictable inspection rather than attempting to orchestrate, supervise, or
+autonomously coordinate agents.
 
-**Public beta · v0.1.0-beta.1 · MIT license**
+Work orders are ordinary JSON files. Any agent or person with filesystem access
+can read the same records with normal tools, while `work-box-orders` provides
+strict validation and deterministic machine-readable output.
 
-This is early beta software, not a desktop-certified release. Automated tests cover the core logic, managed process lifecycle with fake workers, and basic UI behavior. The shell has had a KDE Wayland startup/layout check. **Hyprland behavior and real authenticated Codex execution remain unverified.** Physical file-manager drag/drop, native dialogs, live system-theme switching, and broader desktop/environment validation are still pending.
+**Stable release · v0.1.0 · MIT license**
 
-## Run
+## Install
 
-Requires Linux, Python 3.11+, and a functioning Qt 6 desktop runtime. From this repository:
+Work Box requires Python 3.11 or newer and has no runtime package dependencies.
+
+```sh
+uv tool install git+https://github.com/transientclover-ui/work-box.git@v0.1.0
+# or
+python -m pip install git+https://github.com/transientclover-ui/work-box.git@v0.1.0
+```
+
+From a source checkout:
 
 ```sh
 uv sync
-uv run work-box
-# Optionally open an existing Box:
-uv run work-box /path/to/project
+uv run work-box-orders --help
 ```
 
-Alternatively create a virtual environment and `pip install -e .`.
-
-## Install in the Linux application menu (including KDE Plasma)
-
-For a persistent installation independent of this checkout, run from the repository:
+The Linux release archive contains the application sources and an executable
+launcher. It can be extracted into a user-owned directory and run without
+installing the Python package:
 
 ```sh
-uv tool install .
-uv tool run --from work-box work-box-desktop
+./work-box-0.1.0-linux-x86_64/bin/work-box-orders --help
 ```
 
-For a pip installation, run `work-box-desktop` from the same activated environment
-where you installed Work Box. For development with `uv sync`, use
-`uv run work-box-desktop`; keep that checkout and its `.venv` in place.
-Registration is an explicit second step: pip/uv virtual environments do not
-normally expose their desktop data to the desktop session.
+## Inspect shared work
 
-The helper writes `work-box.desktop` to `$XDG_DATA_HOME/applications` (default
-`~/.local/share/applications`), replacing an older Work Box entry at that location.
-It uses the absolute installed `work-box` executable, so launching does not depend
-on the desktop session's PATH, an activated environment, or the working directory.
-It reuses the standard themed `folder` icon already used by Work Box; no separate
-icon download or custom branding is needed. The wheel includes the template.
-Search for **Work Box** in Plasma's application launcher after registration.
+List validated records in deterministic filename order:
 
-After updating/reinstalling, rerun the helper. If you move or delete the Python
-environment, reinstall and register again. To remove the menu entry, remove
-`${XDG_DATA_HOME:-$HOME/.local/share}/applications/work-box.desktop`; uninstalling
-the Python package alone does not remove this separately registered entry.
-Neither operation deletes your Boxes or project files.
+```sh
+work-box-orders /path/to/work-orders
+```
 
-If Plasma does not discover it, run `kbuildsycoca6` (or `kbuildsycoca5` on Plasma 5)
-and search again, or log out and back in. Check the `Exec=` path in the installed
-entry and run that executable from a terminal to see startup errors. A Qt runtime
-or platform-plugin error must be resolved in the Python/Qt installation.
-`desktop-file-validate` can check the installed entry when available.
+Filter the listing using the model's status vocabulary:
 
-Distribution packagers can install `share/work-box.desktop` into
-`$prefix/share/applications` with `work-box` in the session PATH, and depend on a
-standard icon theme providing `folder`. The per-user helper requires no root
-access and does not modify desktop settings or services.
+```sh
+work-box-orders --status active /path/to/work-orders
+```
 
-## Use
+Read one complete validated record:
 
-1. Create Box: select an existing folder for its `.workbox` metadata, then name it. An existing `.workbox` is never replaced; use Open Box instead.
-2. Associate project folders or a Git repository. Add files or drop files/folders to reference them in place. No copying or relocation happens.
-3. Select an installed worker. This release detects Codex and GitHub Copilot; only Codex execution is enabled. Authenticate in the worker's own terminal interface first.
-4. Choose the working folder and describe the work, including which files may change. Give Work starts a noninteractive Codex run with the workspace-write sandbox. The worker's own configuration, installed integrations, and policies still apply. Extra Box locations are context references, not automatically granted write roots.
-5. HALT stops the managed process group and preserves files already written. Closing the window also halts. Double-click a task to open its request, context and log folder in the normal file manager.
+```sh
+work-box-orders --detail /path/to/work-orders/order.json
+```
 
-System appearance is the default. Light/Dark overrides use Qt's color-scheme API. System fonts, palettes, icons and dialogs depend on available platform integration; Work Box never changes the desktop theme. A bundled PySide6 Qt may not load distribution plugins with a different Qt ABI. See the architecture document for packaging caveats.
+Count every status, including zero-count statuses:
 
-## Durable files
+```sh
+work-box-orders --summary /path/to/work-orders
+```
+
+Successful commands emit JSON on stdout. Invalid command usage exits `2`.
+Missing, unreadable, malformed, or model-invalid input exits `1`, writes a
+diagnostic to stderr, and emits no partial JSON.
+
+Listing, filtering, detail inspection, and summaries are read-only. They do not
+save records, change timestamps, start workers, or resolve referenced paths.
+
+## WorkOrder format
+
+The format records a stable UUID, title, description, status, optional assigned
+worker label, input/output descriptions, constraints, dependency IDs, timestamps,
+and schema version. The five valid statuses are:
 
 ```text
-chosen-folder/
-  .workbox/
-    box.json                 # versioned metadata, absolute references
-    lock                     # advisory exclusive ownership
-    tasks/<uuid>/
-      task.json              # authorized workers, pieces, status, timestamps
-      request.md             # original request
-      context.json           # Box context at launch
-      input.md               # exact worker input
-      launch.json            # argument list and working folder (no credentials)
-      worker.log             # merged stdout/stderr; contains worker result
-      HALT                   # optional durable stop intent
+active
+cancelled
+completed
+draft
+waiting
 ```
 
-Deleting Work Box does not delete project materials. Metadata is plain JSON/Markdown; no database or proprietary project container is involved. Moving a referenced path requires updating its association. Logs can contain sensitive project content: review before sharing. Work Box does not collect or store provider credentials or copy worker authentication files.
+See [WorkOrder format and CLI](docs/work-orders.md) and the
+[example record](examples/work-order.json).
+
+## Finished scope
+
+Work Box provides:
+
+- a versioned, human-readable WorkOrder JSON format;
+- strict full-record validation through one shared model;
+- deterministic list, status-filter, detail, and status-count JSON output;
+- predictable error and exit-code behavior;
+- a pure-stdlib runtime suitable for local tools and AI-agent workflows.
+
+Work Box does **not** execute work orders, launch or supervise agents, arbitrate
+between agents, quarantine output, repair files, recover work automatically, or
+coordinate multi-agent activity. Those larger concepts are outside the product,
+not missing milestones.
 
 ## Development
 
-This project is “2D-printed”: I specify the behavior, AI workers fabricate the implementation, and I test, inspect, refine, and iterate the result.
-
 ```sh
 uv sync
-uv run pytest
-QT_QPA_PLATFORM=offscreen uv run pytest tests/test_ui.py
+uv run pytest -q
+uv build
+git diff --check
 ```
 
-Tests use temporary directories and fake workers; they make no paid AI requests. See [architecture](docs/architecture.md), [development journal](docs/journal.md), and [desktop validation checklist](docs/desktop-validation.md).
-
-## Deliberate boundaries
-
-Copilot launch, interactive approval handling, resume UI, copying materials, task splitting, parallel workers, failover, and ZIP Time Capsules are not implemented. The model reserves multi-worker and capsule contracts. Exit code zero means the worker completed its process, not that Work Box has verified its work.
-
-Process groups handle normal descendants, not children that deliberately detach into new sessions. A separate watchdog handles GUI death; simultaneous watchdog failure can leave descendants and is not a containment guarantee. Future cgroup integration must remain optional and must not modify system services. Network filesystem locking and power-loss behavior are not certified. Use a local filesystem for metadata in this release.
+The project architecture is documented in [docs/architecture.md](docs/architecture.md).
+Historical development decisions are retained in
+[docs/journal.md](docs/journal.md) with superseded concepts clearly marked.

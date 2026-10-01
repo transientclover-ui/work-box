@@ -1,0 +1,22 @@
+{
+  "title": "Document project entry points",
+  "description": "Identify the application entry points and summarize their responsibilities.",
+  "status": "draft",
+  "assigned_worker": null,
+  "inputs": [
+    "README.md",
+    "pyproject.toml",
+    "src/workbox/"
+  ],
+  "expected_outputs": [
+    "A short entry-point inventory in docs/entry-points.md"
+  ],
+  "constraints": [
+    "Read source files only; do not run workers or change application behavior."
+  ],
+  "dependencies": [],
+  "id": "120e33b4-b4a8-4fe6-ab4e-b3efdb6a7dd4",
+  "created_at": "2026-09-27T17:16:35.274990+00:00",
+  "updated_at": "2026-09-27T17:16:35.275033+00:00",
+  "schema_version": 1
+}
