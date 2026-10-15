@@ -13,7 +13,19 @@ strict validation and deterministic machine-readable output.
 
 ## Install
 
-Work Box requires Python 3.11 or newer and has no runtime package dependencies.
+Work Box requires Python 3.11 or newer and has no third-party Python runtime
+package dependencies.
+
+[Open Work Box in OmaStore](omastore://transientclover-ui/work-box), or search
+OmaStore for **Work Box** (`transientclover-ui/work-box` on GitHub).
+
+The v0.1.0 OmaStore archive supports Linux x86_64. Its launcher uses system
+`python3` (3.11+), `/bin/sh`, and `dirname`; Python is not bundled. No daemon or
+service is required. No ARM64 application archive is published.
+
+The release asset `work_box-0.1.0-source.tar.gz` is the Python source distribution,
+not an OmaStore application archive. Its contents are unchanged from the former
+`work_box-0.1.0.tar.gz` asset.
 
 ```sh
 uv tool install git+https://github.com/transientclover-ui/work-box.git@v0.1.0
